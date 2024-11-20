@@ -153,6 +153,8 @@ export class AssetManager {
   }
 }
 
+export const assetManager = new AssetManager();
+
 function getPathPrefix() {
   // Using template strings to create url paths breaks on github pages
   // We need to manually add the required /repo/ prefix to the path if not on localhost
