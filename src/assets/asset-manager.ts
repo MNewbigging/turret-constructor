@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { ModelAsset, TextureAsset, AnimationAsset } from "./asset-names";
 
@@ -12,7 +11,6 @@ export class AssetManager {
 
   private loadingManager = new THREE.LoadingManager();
   private fbxLoader = new FBXLoader(this.loadingManager);
-  private gltfLoader = new GLTFLoader(this.loadingManager);
   private rgbeLoader = new RGBELoader(this.loadingManager);
   private textureLoader = new THREE.TextureLoader(this.loadingManager);
 
@@ -25,6 +23,28 @@ export class AssetManager {
     model.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.material.map = texture;
+      }
+    });
+  }
+
+  getTexture(name: TextureAsset) {
+    return this.textures.get(name) ?? null;
+  }
+
+  applyTurretMaterial(mesh: THREE.Object3D, colour: TextureAsset) {
+    const material = new THREE.MeshPhysicalMaterial();
+    material.map = this.getTexture(colour);
+    material.normalMap = this.getTexture(TextureAsset.TurretsNormal);
+    material.aoMap = this.getTexture(TextureAsset.TurretsAO);
+    material.roughnessMap = this.getTexture(TextureAsset.TurretsRoughness);
+    material.metalness = 1;
+    material.emissiveMap = this.getTexture(TextureAsset.TurretsEmission);
+    material.emissiveIntensity = 10;
+    material.emissive = new THREE.Color(0xff0000);
+
+    mesh.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.material = material;
       }
     });
   }
@@ -49,33 +69,24 @@ export class AssetManager {
 
     return new Promise((resolve) => {
       this.loadingManager.onLoad = () => {
+        // Perform any setup on assets before completing
+        this.prepareHdri();
+
         resolve();
       };
     });
   }
 
   private loadModels() {
-    this.loadModel(ModelAsset.Bandit);
-
-    this.loadModel(ModelAsset.BoxSmall, (group: THREE.Group) => {
-      group.traverse((child: THREE.Object3D) => {
-        if (child instanceof THREE.Mesh) {
-          child.material.metalness = 0; // kenney assets require this to render correctly
-        }
-      });
-    });
+    Object.values(ModelAsset).forEach((asset: ModelAsset) =>
+      this.loadModel(asset)
+    );
   }
 
   private loadTextures() {
-    this.loadTexture(
-      TextureAsset.BANDIT,
-      (texture) => (texture.colorSpace = THREE.SRGBColorSpace)
-    );
-
-    this.loadTexture(
-      TextureAsset.HDR,
-      (texture) => (texture.mapping = THREE.EquirectangularReflectionMapping)
-    );
+    Object.values(TextureAsset).forEach((asset: TextureAsset) => {
+      this.loadTexture(asset);
+    });
   }
 
   private loadAnimations() {
@@ -101,13 +112,9 @@ export class AssetManager {
       });
 
       return;
+    } else {
+      console.warn("cannot load this one", filename);
     }
-
-    // GLTF
-    this.gltfLoader.load(url, (gltf: GLTF) => {
-      onLoad?.(gltf.scene);
-      this.models.set(filename, gltf.scene);
-    });
   }
 
   private loadTexture(
@@ -121,6 +128,7 @@ export class AssetManager {
     const loader = filetype === "png" ? this.textureLoader : this.rgbeLoader;
 
     loader.load(url, (texture) => {
+      texture.colorSpace = THREE.LinearSRGBColorSpace;
       onLoad?.(texture);
       this.textures.set(filename, texture);
     });
@@ -137,6 +145,11 @@ export class AssetManager {
         this.animations.set(filename, clip);
       }
     });
+  }
+
+  private prepareHdri() {
+    const hdri = this.getTexture(TextureAsset.HDRI)!;
+    hdri.mapping = THREE.EquirectangularReflectionMapping;
   }
 }
 

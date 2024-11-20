@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
 import { assetManager } from "../assets/asset-manager";
-import { AnimatedObject } from "./animated-object";
 import { TextureAsset, ModelAsset } from "../assets/asset-names";
 
 export class GameState {
@@ -13,8 +12,6 @@ export class GameState {
   private camera = new THREE.PerspectiveCamera();
   private controls: OrbitControls;
 
-  private animatedObject: AnimatedObject;
-
   constructor() {
     this.setupCamera();
     this.renderPipeline = new RenderPipeline(this.scene, this.camera);
@@ -23,11 +20,6 @@ export class GameState {
     this.setupScene();
     this.setupLights();
     this.setupObjects();
-
-    this.animatedObject = new AnimatedObject(assetManager);
-    this.animatedObject.position.z = -0.5;
-    this.animatedObject.playAnimation("idle");
-    this.scene.add(this.animatedObject);
 
     // Start game
     this.update();
@@ -50,7 +42,7 @@ export class GameState {
 
   private setupScene() {
     this.scene.background = new THREE.Color("#1680AF");
-    const envMap = assetManager.textures.get(TextureAsset.HDR)!;
+    const envMap = assetManager.textures.get(TextureAsset.HDRI)!;
     this.scene.environment = envMap;
   }
 
@@ -64,8 +56,13 @@ export class GameState {
   }
 
   private setupObjects() {
-    const box = assetManager.getModel(ModelAsset.BoxSmall);
-    this.scene.add(box);
+    // const box = assetManager.getModel(ModelAsset.BoxSmall);
+    // this.scene.add(box);
+
+    const turretBase = assetManager.getModel(ModelAsset.BaseTurretLvl0);
+    assetManager.applyModelTexture(turretBase, TextureAsset.TurretsAlbedoBlack);
+    turretBase.scale.multiplyScalar(0.01);
+    this.scene.add(turretBase);
   }
 
   private update = () => {
@@ -74,8 +71,6 @@ export class GameState {
     const dt = this.clock.getDelta();
 
     this.controls.update();
-
-    this.animatedObject.update(dt);
 
     this.renderPipeline.render(dt);
   };

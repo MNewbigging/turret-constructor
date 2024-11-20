@@ -58,7 +58,7 @@ export enum ModelAsset {
   FenceLvl3 = "Fence_Lvl3.fbx",
   HalfShoulderArmorAmmoLvl1 = "HalfShoulder_Armor_Ammo_Lvl1.fbx",
   HalfShoulderArmorAmmoLvl2 = "HalfShoulder_Armor_Ammo_Lvl2.fbx",
-  HalfShoulderArmorAmmoLvl3 = "HalfShoulder_Armor_Ammo_Lvl31fbx",
+  HalfShoulderArmorAmmoLvl3 = "HalfShoulder_Armor_Ammo_Lvl3.fbx",
   HalfShoulderArmorLvl1 = "HalfShoulder_Armor_Lvl1.fbx",
   HalfShoulderArmorLvl2 = "HalfShoulder_Armor_Lvl2.fbx",
   HalfShoulderArmorLvl3 = "HalfShoulder_Armor_Lvl3.fbx",
@@ -116,9 +116,6 @@ export enum ModelAsset {
   WeaponRadarTopLvl2 = "Weapon_Radar_Top_Lvl2.fbx",
   WeaponRadarTopLvl3 = "Weapon_Radar_Top_Lvl3.fbx",
   WeaponTopNimbus = "Weapon_Top_Nimbus.fbx",
-  // template assets
-  Bandit = "bandit.fbx",
-  BoxSmall = "box-small.glb",
 }
 
 export enum TextureAsset {
@@ -134,8 +131,4 @@ export enum TextureAsset {
   TurretsNormal = "Turrets_normal_PBR.png",
   TurretsRoughness = "Turrets_Roughness.png",
   HDRI = "zwartkops_straight_morning_1k.hdr",
-
-  // template assets
-  BANDIT = "bandit-texture.png",
-  HDR = "orchard_cartoony.hdr",
 }
