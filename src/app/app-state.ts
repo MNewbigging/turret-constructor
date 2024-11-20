@@ -1,4 +1,4 @@
-import { assetManager } from "../game/asset-manager";
+import { assetManager } from "../assets/asset-manager";
 import { GameState } from "../game/game-state";
 import { action, makeAutoObservable, observable } from "mobx";
 

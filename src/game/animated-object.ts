@@ -1,10 +1,10 @@
 import * as THREE from "three";
+import { AssetManager } from "../assets/asset-manager";
 import {
-  AnimationAsset,
-  AssetManager,
   ModelAsset,
   TextureAsset,
-} from "./asset-manager";
+  AnimationAsset,
+} from "../assets/asset-names";
 
 export type AnimatedObjectState = "idle";
 
@@ -17,7 +17,7 @@ export class AnimatedObject extends THREE.Object3D {
     super();
 
     // Setup mesh
-    const mesh = assetManager.getModel(ModelAsset.BANDIT);
+    const mesh = assetManager.getModel(ModelAsset.Bandit);
     assetManager.applyModelTexture(mesh, TextureAsset.BANDIT);
 
     this.add(mesh);

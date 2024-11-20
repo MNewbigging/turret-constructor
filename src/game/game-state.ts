@@ -1,8 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { assetManager, ModelAsset, TextureAsset } from "./asset-manager";
+import { assetManager } from "../assets/asset-manager";
 import { AnimatedObject } from "./animated-object";
+import { TextureAsset, ModelAsset } from "../assets/asset-names";
 
 export class GameState {
   private renderPipeline: RenderPipeline;
@@ -63,7 +64,7 @@ export class GameState {
   }
 
   private setupObjects() {
-    const box = assetManager.getModel(ModelAsset.BOX_SMALL);
+    const box = assetManager.getModel(ModelAsset.BoxSmall);
     this.scene.add(box);
   }
 
