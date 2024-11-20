@@ -13,6 +13,7 @@ To setup, you must:
 
 - Open `vite.config.ts` and edit the `base` property to read `/<your-repo-name>/`
 - In Github, go to your repo > Settings > Pages > Build and Deployment and under the Source dropdown, choose Github Actions
+- In AssetManager::getPathPrefix, edit the path to read `/<your-repo-name>/`
 
 # Loading Assets
 
@@ -23,4 +24,3 @@ There are various loader classes responsible for loading different types of asse
 If there are any errors when loading, they will be written to the console log.
 
 The general flow of the app is to wait until all loading has finished before starting the game.
-
