@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderPipeline } from "./render-pipeline";
-import { assetManager, ModelAsset } from "./asset-manager";
+import { assetManager, ModelAsset, TextureAsset } from "./asset-manager";
 import { AnimatedObject } from "./animated-object";
 
 export class GameState {
@@ -16,17 +16,12 @@ export class GameState {
 
   constructor() {
     this.setupCamera();
-
     this.renderPipeline = new RenderPipeline(this.scene, this.camera);
+    this.controls = this.setupControls();
 
+    this.setupScene();
     this.setupLights();
     this.setupObjects();
-
-    this.controls = new OrbitControls(this.camera, this.renderPipeline.canvas);
-    this.controls.enableDamping = true;
-    this.controls.target.set(0, 1, 0);
-
-    this.scene.background = new THREE.Color("#1680AF");
 
     this.animatedObject = new AnimatedObject(assetManager);
     this.animatedObject.position.z = -0.5;
@@ -40,7 +35,22 @@ export class GameState {
   private setupCamera() {
     this.camera.fov = 75;
     this.camera.far = 500;
-    this.camera.position.set(0, 1.5, 3);
+    this.camera.position.set(0, 1.5, 5);
+  }
+
+  private setupControls() {
+    const controls = new OrbitControls(this.camera, this.renderPipeline.canvas);
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.target.set(0, 1, 0);
+
+    return controls;
+  }
+
+  private setupScene() {
+    this.scene.background = new THREE.Color("#1680AF");
+    const envMap = assetManager.textures.get(TextureAsset.HDR)!;
+    this.scene.environment = envMap;
   }
 
   private setupLights() {
